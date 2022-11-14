@@ -1,0 +1,12 @@
+
+auto lo
+iface lo inet loopback
+
+auto enxb827eb3e81a0
+iface enxb827eb3e81a0 inet static
+  address 192.168.10.236/20
+  gateway 192.168.10.190
+
+auto wlan0
+iface wlan0 inet dhcp
+
