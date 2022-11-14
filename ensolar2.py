@@ -1,6 +1,10 @@
 #! /usr/bin/env python3
 
+# Author: Paolo Bonzini
+# Licensed under AGPLv3.
 
+# Replacement for vendor datalogger program, for Ensolar2 solar roof.
+#
 # The logs that are produced by this script are mostly bug-compatible with
 # the manufacturer's.  In particular, low/high are swapped in TEEL/TEEH and
 # the low value is signed even though it should be unsigned (add 655.36 if

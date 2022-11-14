@@ -1,5 +1,14 @@
 #! /usr/bin/env python3
 
+# Author: Paolo Bonzini
+# Licensed under AGPLv3.
+
+# Similar to mqtt_statestream, but:
+# - the full state is exposed to MQTT as a retained message
+# - services can be invoked by publishing to the MQTT topic
+#   ha-mqtt-gateway/ENTITY_ID/DOMAIN.SERVICE (payload is
+#   passed as data)
+
 import argparse
 import asyncio
 import ijson
