@@ -1,0 +1,15 @@
+[Unit]
+Description=Filesystem/MQTT logger for Ensolar2 hybrid inverters
+After=network.target
+Wants=network.target
+
+[Service]
+Type=exec
+ExecCondition=/usr/bin/test -r /dev/ttyUSB0
+ExecStart=/home/pi/dt2-py3.9/ensolar2.sh --mqtt 127.0.0.1 --output-directory /home/pi/storage
+Restart=always
+RestartSec=45
+User=pi
+
+[Install]
+WantedBy=multi-user.target

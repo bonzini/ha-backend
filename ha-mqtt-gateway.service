@@ -1,0 +1,15 @@
+[Unit]
+Description=Home Assistant/MQTT gateway
+After=network.target
+Wants=network.target
+
+[Service]
+Type=exec
+ExecStart=/home/pi/ha-mqtt-gateway/ha-mqtt-gateway.sh -f /home/pi/ha-token 192.168.10.210
+StandardOutput=null
+Restart=always
+RestartSec=10
+User=pi
+
+[Install]
+WantedBy=multi-user.target
