@@ -8,7 +8,7 @@
 
 * `mosquitto.conf`: drop-in file for `/etc/mosquitto/conf.d`
 
-* `presa.sh`: script to control HA switch based on solar roof production
+* `presa.*`: script to control HA switch based on solar roof production
 
 * `analysis/`: scripts to analyze data logged by ensolar2.py
 

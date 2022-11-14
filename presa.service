@@ -1,0 +1,18 @@
+[Unit]
+Description=zigbee2mqtt - presa
+After=mosquitto.service
+Wants=mosquitto.service
+
+[Service]
+ExecStart=/home/pi/ha-backend/presa.sh
+PrivateDevices=yes
+PrivateTmp=yes
+WorkingDirectory=/tmp
+StandardOutput=null
+StandardError=null
+Restart=always
+RestartSec=100
+User=pi
+
+[Install]
+WantedBy=multi-user.target
