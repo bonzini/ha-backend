@@ -45,7 +45,7 @@ while :; do
         off=$(($off + 1))
         on=0
       fi
-      #echo $(date) input $net state $state on $on off $off
+      echo "$(date) $mode | input $net | state $state | on $on off $off" > /tmp/presa.log
       ;;
   esac
   sleep 59
