@@ -1,2 +1,2 @@
 paho-mqtt
-pymodbus
+pymodbus<3.0
