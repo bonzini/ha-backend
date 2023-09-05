@@ -271,7 +271,7 @@ class MqttClient:
              mode = 'wait'
          else:
              charge = regs['XBT']
-             mode = 'charging' if regs['BATS'] == 3 else 'day'
+             mode = 'charging' if regs['BATS'] == 3 or regs['BATV'] < 56 else 'day'
 
          if regs['XGR'] < 0:
              balance = 'sell'
