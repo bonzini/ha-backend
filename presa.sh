@@ -10,8 +10,16 @@ put() {
   mosquitto_pub -h $HOST -t $1 -m "$2"
   #echo $1=$2
 }
+
+if test -f /tmp/presa.status && test "$(cat /tmp/presa.status)" = manual; then
+  state=manual
+else
+  # default all'avvio: presa controllata automaticamente
+  state=$(get $TOPIC/state | jq -r .state)
+fi
 on=100
 off=100
+
 while :; do
   month=$(date +%m)
   case $month in
@@ -25,27 +33,59 @@ while :; do
 
   mode=$(get pv/mode)
   case $mode in
-    wait|discharging) ;;
+    wait|discharging) state=night ;;
     *)
       net=$(get pv/production/available | sed 's,\..*,,')
       home=$(get pv/home | sed 's,\..*,,')
-      state=$(get $TOPIC/state | jq -r .state)
-      if test $off -gt 10 && test $net -ge $thres && test $home -lt 1400; then
-        put $TOPIC/switch.turn_on
-        state=on
+      switch=$(get $TOPIC/state | jq -r .state)
+
+      # rileva accensione e spegnimento manuale
+      if test $switch = on && test $state = off; then
+        state=manual
+        on=1
+        off=0
       fi
-      if test $on -gt 60 && test $net -le 1150; then
-        put $TOPIC/switch.turn_off
+      if test $switch = off && test $state = on; then
         state=off
+        on=0
+        off=1
       fi
-      if test $state = on; then
+
+      # azioni automatiche
+      case $state in
+        off)
+          # spento, aspetta dieci minuti prima di riaccendere
+          # in caso di spegnimento manuale, lascia il tempo di staccare
+          if test $off -gt 10 && test $net -ge $thres && test $home -lt 1400; then
+            put $TOPIC/switch.turn_on
+            state=on
+            switch=on
+          fi
+          ;;
+        night|on)
+          # nuovo giorno => spegne alla mattina
+          # acceso automaticamente => carica per almeno un'ora
+          if test $state = night || (test $on -gt 60 && test $net -le 1150); then
+            put $TOPIC/switch.turn_off
+            state=off
+            switch=off
+          fi
+          ;;
+        manual)
+          # si spegne solo la mattina dopo, passando da night
+          ;;
+      esac
+
+      if test $switch = on; then
         on=$(($on + 1))
         off=0
       else
         off=$(($off + 1))
         on=0
       fi
+
       echo "$(date) $mode | input $net | state $state | on $on off $off" > /tmp/presa.log
+      echo "$state" > /tmp/presa.status
       ;;
   esac
   sleep 59

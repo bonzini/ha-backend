@@ -6,7 +6,7 @@ Wants=mosquitto.service
 [Service]
 ExecStart=/home/pi/ha-backend/presa.sh
 PrivateDevices=yes
-PrivateTmp=yes
+PrivateTmp=no
 WorkingDirectory=/tmp
 StandardOutput=null
 StandardError=null
